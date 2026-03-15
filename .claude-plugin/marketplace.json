@@ -1,0 +1,11 @@
+{
+  "name": "btrs-toolkit",
+  "description": "Buttars Development Workflow System",
+  "plugins": [
+    {
+      "name": "btrs-toolkit",
+      "description": "36 Claude Code skills, 8 agents, and 11 Obsidian templates for code review, planning, implementation, design, documentation, devops, and project management.",
+      "path": "."
+    }
+  ]
+}

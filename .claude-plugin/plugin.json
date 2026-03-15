@@ -1,0 +1,23 @@
+{
+  "name": "btrs-toolkit",
+  "version": "7.0.0",
+  "description": "Buttars Development Workflow System — 36 Claude Code skills, 8 agents, and 11 Obsidian templates for code review, planning, implementation, design, documentation, devops, and project management.",
+  "author": {
+    "name": "Brandon Buttars",
+    "url": "https://github.com/brandonbuttars"
+  },
+  "repository": "https://github.com/brandonbuttars/btrs-toolkit",
+  "license": "MIT",
+  "keywords": [
+    "code-review",
+    "tech-debt",
+    "obsidian",
+    "planning",
+    "documentation",
+    "devops",
+    "design",
+    "workflow"
+  ],
+  "skills": "./skills/",
+  "agents": "./agents/"
+}
