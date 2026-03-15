@@ -1,0 +1,67 @@
+# BTRS Config Reference
+
+All skills read `.btrs-config.json` at the project root to resolve the base output directory. This avoids hardcoding `.local/` and lets each project customize the location.
+
+## Config file format
+
+```json
+{
+  "version": "1.0.0",
+  "basedir": ".local",
+  "created": "2025-03-14"
+}
+```
+
+## Reading the config (Step 0 pattern)
+
+Every skill that writes output files must resolve the basedir before doing anything else. Use this pattern at the start of the skill (before any directory checks):
+
+```bash
+# 1. Check for config file
+if [ -f ".btrs-config.json" ]; then
+  BASEDIR=$(cat .btrs-config.json | grep '"basedir"' | sed 's/.*"basedir"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+else
+  BASEDIR=".local"
+fi
+
+# 2. Verify the basedir exists (project is initialized)
+test -d "$BASEDIR"
+```
+
+If the config file exists, read `basedir` from it. If not, fall back to `.local`.
+
+If the basedir directory doesn't exist, tell the user: "This project hasn't been initialized yet. Run `/btrs-init-project` first."
+
+## Using basedir in skills
+
+After resolving basedir, use `<basedir>/` in all output paths:
+
+- `<basedir>/reviews/` — MR reviews, audit reports, scan reports
+- `<basedir>/releases/` — Release documentation
+- `<basedir>/tech-debt.md` — Tech debt master list
+- `<basedir>/tech-debt/` — Tech debt detail files
+- `<basedir>/todos.md` — Todo master list
+- `<basedir>/todos/` — Todo detail files
+- `<basedir>/decisions/` — ADRs
+- `<basedir>/bugs/` — Bug reports
+- `<basedir>/specs/` — Feature and API specs
+- `<basedir>/docs/` — Generated documentation
+- `<basedir>/notes/` — Knowledge capture, conversation summaries
+- `<basedir>/templates/` — Obsidian templates
+
+## In skill instructions
+
+When writing a SKILL.md, reference this file and use `<basedir>` as a placeholder in all paths. The actual value comes from the config read at runtime.
+
+Example Step 0:
+
+```
+## Step 0: Read config and verify project
+
+Read the shared config reference:
+\```
+~/.claude/skills/shared/config.md
+\```
+
+Resolve the basedir from `.btrs-config.json` (default: `.local`). Verify the project is initialized by checking that the basedir directory exists.
+```
