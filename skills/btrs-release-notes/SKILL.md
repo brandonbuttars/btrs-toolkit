@@ -231,7 +231,7 @@ If files with these names already exist, overwrite them.
 
 ### Document 1: Customer Release Notes
 
-Filename: `<basedir>/releases/<version-name>/<YYYY-MM-DD>-customer.md`
+Filename: `<basedir>/releases/<version-name>/customer.md`
 
 This is for end users, stakeholders, and product managers. No code, no file paths, no technical jargon. Focus on what the user can now do, what was fixed, and what they need to know.
 
@@ -285,7 +285,7 @@ What can they do now that they couldn't before? What problems were fixed?>
 
 ### Document 2: Engineering Release Notes
 
-Filename: `<basedir>/releases/<version-name>/<YYYY-MM-DD>-engineering.md`
+Filename: `<basedir>/releases/<version-name>/engineering.md`
 
 This is the full technical release documentation for developers, QA, and DevOps.
 
@@ -414,7 +414,7 @@ For each tech debt item identified in Step 8:
 
 Then generate a release-specific summary:
 
-Filename: `<basedir>/releases/<version-name>/<YYYY-MM-DD>-tech-debt.md`
+Filename: `<basedir>/releases/<version-name>/tech-debt.md`
 
 This document summarizes the tech debt picture for this specific release but references the persistent backlog for details.
 
