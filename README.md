@@ -107,16 +107,6 @@ AI-powered development workflow — code review, planning, implementation, desig
 
 ## Installation
 
-### Option 1: Claude Code plugin (recommended)
-
-In Claude Code, run:
-```
-/plugin marketplace add brandonbuttars/btrs-toolkit
-/plugin install btrs-toolkit@brandonbuttars-btrs-toolkit
-```
-
-### Option 2: Install script
-
 ```bash
 bash <(curl -sL https://raw.githubusercontent.com/brandonbuttars/btrs-toolkit/main/install.sh)
 ```
