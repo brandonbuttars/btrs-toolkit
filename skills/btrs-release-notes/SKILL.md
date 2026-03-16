@@ -218,7 +218,7 @@ This analysis feeds Document 3 (Technical Debt Report). Scan the entire release 
 
 ## Step 9: Generate three documents
 
-Derive the release version name from the new branch: strip any `release/` prefix and replace `/` with `-` (e.g., `release/5.2.3` becomes `5.2.3`, `feature/foo` becomes `feature-foo`).
+Derive the release version name from the new branch: strip common prefixes (`release/`, `releases/`, `hotfix/`) and use the remainder as-is for the folder name. Do not replace `.` or other characters — preserve the version string exactly (e.g., `release/5.2.3` becomes `5.2.3`, `v2.0.1` stays `v2.0.1`). For branches with remaining `/` separators, replace `/` with `-` (e.g., `feature/foo/bar` becomes `feature-foo-bar`).
 
 Create the output directory for this release:
 ```bash
