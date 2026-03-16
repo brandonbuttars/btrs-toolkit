@@ -231,7 +231,7 @@ If files with these names already exist, overwrite them.
 
 ### Document 1: Customer Release Notes
 
-Filename: `<basedir>/releases/<version-name>/customer.md`
+Filename: `<basedir>/releases/<version-name>/customer-notes.md`
 
 This is for end users, stakeholders, and product managers. No code, no file paths, no technical jargon. Focus on what the user can now do, what was fixed, and what they need to know.
 
@@ -285,7 +285,7 @@ What can they do now that they couldn't before? What problems were fixed?>
 
 ### Document 2: Engineering Release Notes
 
-Filename: `<basedir>/releases/<version-name>/engineering.md`
+Filename: `<basedir>/releases/<version-name>/engineering-notes.md`
 
 This is the full technical release documentation for developers, QA, and DevOps.
 
@@ -407,14 +407,14 @@ mkdir -p <basedir>/tech-debt
 ```
 
 For each tech debt item identified in Step 8:
-1. Check `<basedir>/tech-debt.md` for duplicates (search titles and grep detail files for same file paths)
-2. If no duplicate exists, create a new detail file in `<basedir>/tech-debt/` and add a row to `<basedir>/tech-debt.md`
+1. Check `<basedir>/tech-debt-notes.md` for duplicates (search titles and grep detail files for same file paths)
+2. If no duplicate exists, create a new detail file in `<basedir>/tech-debt/` and add a row to `<basedir>/tech-debt-notes.md`
 3. If a duplicate exists and is Open, update the detail file with the new occurrence
 4. Set the source to `release/<old-branch>→<new-branch> (YYYY-MM-DD)`
 
 Then generate a release-specific summary:
 
-Filename: `<basedir>/releases/<version-name>/tech-debt.md`
+Filename: `<basedir>/releases/<version-name>/tech-debt-notes.md`
 
 This document summarizes the tech debt picture for this specific release but references the persistent backlog for details.
 
