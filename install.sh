@@ -2,15 +2,29 @@
 set -euo pipefail
 
 # Buttars Development Workflow System — Installer
-# Installs skills, agents, and shared references into ~/.claude/
+# Clones the toolkit to ~/.claude/btrs-toolkit and symlinks into ~/.claude/
 
-TOOLKIT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CLAUDE_DIR="$HOME/.claude"
+TOOLKIT_DIR="$CLAUDE_DIR/btrs-toolkit"
 SKILLS_DIR="$CLAUDE_DIR/skills"
 AGENTS_DIR="$CLAUDE_DIR/agents"
+REPO_URL="https://github.com/brandonbuttars/btrs-toolkit.git"
 
 echo "Installing Buttars Development Workflow System..."
-echo "Source: $TOOLKIT_DIR"
+echo ""
+
+# Clone or update the toolkit
+if [ -d "$TOOLKIT_DIR/.git" ]; then
+  echo "Updating existing install..."
+  git -C "$TOOLKIT_DIR" pull --ff-only 2>/dev/null || echo "  Could not pull — using existing version"
+elif [ -d "$TOOLKIT_DIR" ]; then
+  echo "ERROR: $TOOLKIT_DIR exists but is not a git repo. Remove it first."
+  exit 1
+else
+  echo "Cloning to $TOOLKIT_DIR..."
+  git clone "$REPO_URL" "$TOOLKIT_DIR"
+fi
+
 echo ""
 
 # Create directories
@@ -65,3 +79,4 @@ echo "Agents:     $AGENT_COUNT linked"
 
 echo ""
 echo "Done. Run /btrs-init-project in any repo to get started."
+echo "To update later: ~/.claude/btrs-toolkit/install.sh"

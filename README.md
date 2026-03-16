@@ -118,12 +118,13 @@ In Claude Code, run:
 ### Option 2: Install script
 
 ```bash
-git clone git@github.com:brandonbuttars/btrs-toolkit.git ~/btrs-toolkit
-cd ~/btrs-toolkit
-./install.sh
+bash <(curl -sL https://raw.githubusercontent.com/brandonbuttars/btrs-toolkit/main/install.sh)
 ```
 
-This symlinks all 36 skills, 10 shared references, and 8 agents into `~/.claude/`. Run `./uninstall.sh` to remove.
+This clones the toolkit to `~/.claude/btrs-toolkit/` and symlinks all 36 skills, 10 shared references, and 8 agents into `~/.claude/`. The repo stays tucked inside `~/.claude/` — it never touches your project directories.
+
+To update: `~/.claude/btrs-toolkit/install.sh`
+To uninstall: `~/.claude/btrs-toolkit/uninstall.sh`
 
 ## Quick Start
 

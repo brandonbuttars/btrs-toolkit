@@ -2,10 +2,12 @@
 set -euo pipefail
 
 # Buttars Development Workflow System — Uninstaller
-# Removes symlinks from ~/.claude/ (does not touch project files)
+# Removes symlinks from ~/.claude/ and optionally removes the toolkit clone
 
-SKILLS_DIR="$HOME/.claude/skills"
-AGENTS_DIR="$HOME/.claude/agents"
+CLAUDE_DIR="$HOME/.claude"
+TOOLKIT_DIR="$CLAUDE_DIR/btrs-toolkit"
+SKILLS_DIR="$CLAUDE_DIR/skills"
+AGENTS_DIR="$CLAUDE_DIR/agents"
 
 echo "Uninstalling Buttars Development Workflow System..."
 echo ""
@@ -35,6 +37,19 @@ for link in "$AGENTS_DIR"/btrs-*; do
   fi
 done
 echo "Agents:     $AGENT_COUNT removed"
+
+echo ""
+
+# Offer to remove the toolkit clone
+if [ -d "$TOOLKIT_DIR" ]; then
+  read -rp "Remove $TOOLKIT_DIR? [y/N] " answer
+  if [[ "$answer" =~ ^[Yy]$ ]]; then
+    rm -rf "$TOOLKIT_DIR"
+    echo "Toolkit removed."
+  else
+    echo "Toolkit kept at $TOOLKIT_DIR"
+  fi
+fi
 
 echo ""
 echo "Done. Project files (.btrs-config.json, basedir contents) are untouched."
