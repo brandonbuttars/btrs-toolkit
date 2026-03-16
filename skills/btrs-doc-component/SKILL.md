@@ -15,14 +15,14 @@ argument-hint: <component-path or name>
 
 Generate documentation for a component by analyzing its source code.
 
-## Step 0: Read config and verify project
+## Step 0: Read config
 
 Read the shared config reference:
 ```
 ~/.claude/skills/shared/config.md
 ```
 
-Resolve the basedir from `.btrs-config.json` (default: `.local`). Verify the project is initialized.
+Resolve the basedir from `.btrs-config.json` (default: `.local`). Create the basedir and any needed subdirectories if they don't exist.
 
 ## Step 1: Find the component
 

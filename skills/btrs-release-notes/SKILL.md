@@ -23,14 +23,14 @@ Generate three levels of release documentation by comparing two branches:
 2. **Engineering release notes** — Detailed and technical. Full change categorization, affected areas, risk assessment, deployment notes. Written for developers, QA, and DevOps.
 3. **Technical debt report** — Quality analysis of the release diff. Identifies patterns of concern, consistency issues, and specific recommended changes. Written for the engineering team to plan follow-up work.
 
-## Step 0: Read config and verify project
+## Step 0: Read config
 
 Read the shared config reference:
 ```
 ~/.claude/skills/shared/config.md
 ```
 
-Resolve the basedir from `.btrs-config.json` (default: `.local`). Verify the project is initialized by checking that the basedir directory exists and contains `releases/` and `tech-debt/`.
+Resolve the basedir from `.btrs-config.json` (default: `.local`). Create the basedir and any needed subdirectories if they don't exist.
 
 ## Step 1: Parse arguments and determine branches
 

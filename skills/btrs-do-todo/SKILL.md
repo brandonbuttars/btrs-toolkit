@@ -14,14 +14,14 @@ argument-hint: <item-id> or "list" or "next"
 
 Pick a todo item from the list and implement it.
 
-## Step 0: Read config and verify project
+## Step 0: Read config
 
 Read the shared config reference:
 ```
 ~/.claude/skills/shared/config.md
 ```
 
-Resolve the basedir from `.btrs-config.json` (default: `.local`). Verify the project is initialized by checking that `<basedir>/todos/` exists.
+Resolve the basedir from `.btrs-config.json` (default: `.local`). Create the basedir and any needed subdirectories if they don't exist.
 
 ## Step 1: Parse arguments
 
@@ -38,7 +38,7 @@ Resolve the basedir from `.btrs-config.json` (default: `.local`). Verify the pro
 test -f <basedir>/todos.md
 ```
 
-If it doesn't exist, tell the user: "No todo list found. Run `/btrs-add-todo` to create items, or `/btrs-init-project` to initialize."
+If it doesn't exist, tell the user: "No todo list found. Run `/btrs-add-todo` to create your first item."
 
 ## Step 3: Handle "list" command
 

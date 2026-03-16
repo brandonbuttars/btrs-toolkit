@@ -15,14 +15,14 @@ argument-hint: <api-name or description>
 
 Design an API through conversation and produce a structured API spec.
 
-## Step 0: Read config and verify project
+## Step 0: Read config
 
 Read the shared config reference:
 ```
 ~/.claude/skills/shared/config.md
 ```
 
-Resolve the basedir from `.btrs-config.json` (default: `.local`). Verify the project is initialized.
+Resolve the basedir from `.btrs-config.json` (default: `.local`). Create the basedir and any needed subdirectories if they don't exist.
 
 ## Step 1: Understand the context
 

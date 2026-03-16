@@ -14,14 +14,14 @@ allowed-tools: Bash(git *), Bash(cat *), Bash(ls *), Read, Grep, Glob
 
 Scan the project to detect the technology stack and generate or update `<basedir>/tech-stack.md`. This living document is referenced by CLAUDE.md and other skills to understand project conventions.
 
-## Step 0: Read config and verify project
+## Step 0: Read config
 
 Read the shared config reference:
 ```
 ~/.claude/skills/shared/config.md
 ```
 
-Resolve the basedir from `.btrs-config.json` (default: `.local`). Verify the project is initialized by checking that the basedir directory exists.
+Resolve the basedir from `.btrs-config.json` (default: `.local`). Create the basedir and any needed subdirectories if they don't exist.
 
 ## Step 1: Scan for stack indicators
 

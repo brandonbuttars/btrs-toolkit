@@ -7,14 +7,13 @@ All skills read `.btrs-config.json` at the project root to resolve the base outp
 ```json
 {
   "version": "1.0.0",
-  "basedir": ".local",
-  "created": "2025-03-14"
+  "basedir": ".local"
 }
 ```
 
 ## Reading the config (Step 0 pattern)
 
-Every skill that writes output files must resolve the basedir before doing anything else. Use this pattern at the start of the skill (before any directory checks):
+Every skill that writes output files must resolve the basedir before doing anything else. Use this pattern at the start of the skill:
 
 ```bash
 # 1. Check for config file
@@ -24,13 +23,13 @@ else
   BASEDIR=".local"
 fi
 
-# 2. Verify the basedir exists (project is initialized)
-test -d "$BASEDIR"
+# 2. Auto-create the basedir if it doesn't exist
+mkdir -p "$BASEDIR"
 ```
 
 If the config file exists, read `basedir` from it. If not, fall back to `.local`.
 
-If the basedir directory doesn't exist, tell the user: "This project hasn't been initialized yet. Run `/btrs-init-project` first."
+If the basedir doesn't exist, create it automatically. Skills should also create any subdirectories they need (e.g., `mkdir -p <basedir>/releases`, `mkdir -p <basedir>/tech-debt`). No separate initialization step is required.
 
 ## Using basedir in skills
 
@@ -56,12 +55,12 @@ When writing a SKILL.md, reference this file and use `<basedir>` as a placeholde
 Example Step 0:
 
 ```
-## Step 0: Read config and verify project
+## Step 0: Read config
 
 Read the shared config reference:
 \```
 ~/.claude/skills/shared/config.md
 \```
 
-Resolve the basedir from `.btrs-config.json` (default: `.local`). Verify the project is initialized by checking that the basedir directory exists.
+Resolve the basedir from `.btrs-config.json` (default: `.local`). Create the basedir and any needed subdirectories if they don't exist.
 ```

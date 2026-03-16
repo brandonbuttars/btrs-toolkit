@@ -1,19 +1,24 @@
 ---
 name: btrs-init-project
 description: >
-  Initialize the current project for the Buttars development workflow system.
-  Sets up .btrs-config.json, Obsidian vault, output directories, templates,
-  and validates everything is ready. Use when starting to use any btrs- skill
-  in a new repo. Trigger on phrases like "btrs init", "init project",
-  "set up project for reviews", "initialize for code review",
-  "set up tech debt tracking", "prepare this repo".
+  Optional project setup for the Buttars development workflow system.
+  Customize the basedir, set up Obsidian vault integration, copy templates,
+  and configure .gitignore. Not required — all skills auto-create directories
+  as needed with a default basedir of `.local`. Use when the user wants to
+  customize the basedir, set up Obsidian, or do a full project setup.
+  Trigger on phrases like "btrs init", "init project", "set up project",
+  "set up obsidian", "customize basedir".
 disable-model-invocation: true
 allowed-tools: Bash(git *), Bash(mkdir *), Bash(test *), Bash(cat *), Bash(ls *), Read, Write, Grep, Glob
 ---
 
 # Buttars Init Project Skill
 
-Initialize the current project to work with the Buttars development workflow system. Sets up config, directories, Obsidian vault, templates, and validates skill availability.
+Optional project setup for the Buttars development workflow system. All skills work without initialization — they default to `.local` and auto-create directories as needed. This skill is for when you want to:
+
+- **Customize the basedir** (e.g., `.btrs`, `.docs`, `docs/local` instead of `.local`)
+- **Set up Obsidian vault** integration (excluded folders, templates)
+- **Pre-create the full directory structure** in one step
 
 This skill is idempotent — running it multiple times is safe. It detects what's already set up and only creates what's missing.
 
@@ -34,11 +39,6 @@ All setup happens relative to the project root.
 
 ## Step 2: Read or create `.btrs-config.json`
 
-Read the shared config reference:
-```
-~/.claude/skills/shared/config.md
-```
-
 Check if `.btrs-config.json` already exists at the project root:
 
 ```bash
@@ -58,8 +58,7 @@ Wait for the user's choice (or confirmation of the default), then create the con
 ```json
 {
   "version": "1.0.0",
-  "basedir": "<chosen-basedir>",
-  "created": "YYYY-MM-DD"
+  "basedir": "<chosen-basedir>"
 }
 ```
 

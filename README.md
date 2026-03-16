@@ -10,7 +10,7 @@ AI-powered development workflow — code review, planning, implementation, desig
 
 | Command | Purpose |
 |---------|---------|
-| `/btrs-init-project` | Initialize any repo — config, Obsidian vault, directories, templates |
+| `/btrs-init-project` | Optional — customize basedir, set up Obsidian vault, copy templates |
 | `/btrs-optimize` | Audit all skills for consistency, token efficiency, capability updates |
 | `/btrs-update-stack` | Scan project, generate/update tech-stack.md |
 
@@ -128,11 +128,10 @@ To uninstall: `~/.claude/btrs-toolkit/uninstall.sh`
 
 ## Quick Start
 
+No initialization required. Install globally and start using skills in any git repo:
+
 ```bash
 cd ~/projects/my-app
-
-# Initialize (once per project)
-/btrs-init-project
 
 # Review your branch
 /btrs-review-mr
@@ -153,15 +152,16 @@ cd ~/projects/my-app
 /btrs-doc-component src/components/Button.svelte
 ```
 
-## Configuration
+All skills auto-create directories as needed under the default basedir (`.local/`).
 
-`.btrs-config.json` at project root (created by `/btrs-init-project`):
+## Configuration (optional)
+
+To customize the basedir or set up Obsidian integration, run `/btrs-init-project`. Or create `.btrs-config.json` at your project root:
 
 ```json
 {
   "version": "1.0.0",
-  "basedir": ".local",
-  "created": "2025-03-14"
+  "basedir": ".local"
 }
 ```
 

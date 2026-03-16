@@ -18,14 +18,14 @@ argument-hint: [target-branch]
 
 Perform a thorough, line-by-line code review of the current branch's changes against a target branch. Output a structured markdown review file.
 
-## Step 0: Read config and verify project
+## Step 0: Read config
 
 Read the shared config reference:
 ```
 ~/.claude/skills/shared/config.md
 ```
 
-Resolve the basedir from `.btrs-config.json` (default: `.local`). Verify the project is initialized by checking that the basedir directory exists and contains `reviews/` and `tech-debt/`.
+Resolve the basedir from `.btrs-config.json` (default: `.local`). Create the basedir and any needed subdirectories if they don't exist.
 
 ## Step 1: Determine branches
 
