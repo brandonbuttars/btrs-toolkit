@@ -218,25 +218,11 @@ This analysis feeds Document 3 (Technical Debt Report). Scan the entire release 
 
 ## Step 9: Generate three documents
 
-Derive the release version name for the folder using this exact logic:
+Use the new branch name exactly as provided for the folder name. Do not strip prefixes, replace characters, or transform it in any way.
 
 ```bash
-# Strip common prefixes, preserve everything else exactly
-VERSION_NAME="<new-branch>"
-VERSION_NAME="${VERSION_NAME#release/}"
-VERSION_NAME="${VERSION_NAME#releases/}"
-VERSION_NAME="${VERSION_NAME#hotfix/}"
-# IMPORTANT: Do NOT replace dots, dashes, or any other characters.
-# The version string must be preserved exactly as-is.
-# release/5.2.3 → 5.2.3 (NOT 5_2_3, NOT release_5_2_3)
-# v2.0.1 → v2.0.1
-# Only replace remaining forward slashes with dashes:
-VERSION_NAME="${VERSION_NAME//\//-}"
-
-mkdir -p <basedir>/releases/$VERSION_NAME
+mkdir -p "<basedir>/releases/<new-branch>"
 ```
-
-**CRITICAL:** The folder name must match the version exactly. `release/5.2.3` produces a folder named `5.2.3`, not `5_2_3` or `release_5_2_3`. Do not sanitize, slugify, or transform the version string beyond stripping the prefix.
 
 If files with these names already exist, overwrite them.
 
@@ -244,7 +230,7 @@ If files with these names already exist, overwrite them.
 
 ### Document 1: Customer Release Notes
 
-Filename: `<basedir>/releases/<version-name>/customer-notes.md`
+Filename: `<basedir>/releases/<new-branch>/customer-notes.md`
 
 This is for end users, stakeholders, and product managers. No code, no file paths, no technical jargon. Focus on what the user can now do, what was fixed, and what they need to know.
 
@@ -298,7 +284,7 @@ What can they do now that they couldn't before? What problems were fixed?>
 
 ### Document 2: Engineering Release Notes
 
-Filename: `<basedir>/releases/<version-name>/engineering-notes.md`
+Filename: `<basedir>/releases/<new-branch>/engineering-notes.md`
 
 This is the full technical release documentation for developers, QA, and DevOps.
 
@@ -427,7 +413,7 @@ For each tech debt item identified in Step 8:
 
 Then generate a release-specific summary:
 
-Filename: `<basedir>/releases/<version-name>/tech-debt-notes.md`
+Filename: `<basedir>/releases/<new-branch>/tech-debt-notes.md`
 
 This document summarizes the tech debt picture for this specific release but references the persistent backlog for details.
 
