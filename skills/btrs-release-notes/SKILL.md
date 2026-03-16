@@ -218,12 +218,25 @@ This analysis feeds Document 3 (Technical Debt Report). Scan the entire release 
 
 ## Step 9: Generate three documents
 
-Derive the release version name from the new branch: strip common prefixes (`release/`, `releases/`, `hotfix/`) and use the remainder as-is for the folder name. Do not replace `.` or other characters — preserve the version string exactly (e.g., `release/5.2.3` becomes `5.2.3`, `v2.0.1` stays `v2.0.1`). For branches with remaining `/` separators, replace `/` with `-` (e.g., `feature/foo/bar` becomes `feature-foo-bar`).
+Derive the release version name for the folder using this exact logic:
 
-Create the output directory for this release:
 ```bash
-mkdir -p <basedir>/releases/<version-name>
+# Strip common prefixes, preserve everything else exactly
+VERSION_NAME="<new-branch>"
+VERSION_NAME="${VERSION_NAME#release/}"
+VERSION_NAME="${VERSION_NAME#releases/}"
+VERSION_NAME="${VERSION_NAME#hotfix/}"
+# IMPORTANT: Do NOT replace dots, dashes, or any other characters.
+# The version string must be preserved exactly as-is.
+# release/5.2.3 → 5.2.3 (NOT 5_2_3, NOT release_5_2_3)
+# v2.0.1 → v2.0.1
+# Only replace remaining forward slashes with dashes:
+VERSION_NAME="${VERSION_NAME//\//-}"
+
+mkdir -p <basedir>/releases/$VERSION_NAME
 ```
+
+**CRITICAL:** The folder name must match the version exactly. `release/5.2.3` produces a folder named `5.2.3`, not `5_2_3` or `release_5_2_3`. Do not sanitize, slugify, or transform the version string beyond stripping the prefix.
 
 If files with these names already exist, overwrite them.
 
