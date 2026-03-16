@@ -61,11 +61,17 @@ git merge-base <old-branch> <new-branch>
 # All commits between the two branches (non-merge)
 git log <old-branch>..<new-branch> --oneline --no-merges
 
+# Full commit messages (for ticket/issue extraction from body text)
+git log <old-branch>..<new-branch> --no-merges --format="%H %s%n%b"
+
 # Merge commits only (these often contain MR/PR titles)
 git log <old-branch>..<new-branch> --merges --oneline
 
 # Full merge commit messages (richer detail for MR extraction)
 git log <old-branch>..<new-branch> --merges --format="%H %s%n%b"
+
+# Branch names between the two refs (for ticket ID extraction from branch names)
+git log <old-branch>..<new-branch> --merges --format="%s" | grep -oP "(?<=')[^']+(?=')" || true
 
 # File change summary
 git diff <old-branch>...<new-branch> --stat
@@ -98,6 +104,18 @@ Parse merge commit messages for patterns like:
 
 When MR titles are found, use them as the primary description of each change. Group the related non-merge commits under each MR.
 
+### Extract ticket/issue references
+
+Scan all commit messages (subjects and bodies), merge commit messages, and branch names for ticket/issue tracker references. Common patterns include:
+
+- Jira-style: `PROJ-1234`, `ABC-567` (uppercase letters, dash, digits)
+- Linear-style: `ENG-123`, `FE-45`
+- GitHub/GitLab issues: `#123`, `fixes #456`, `closes #789`
+- Shorthand in branches: `feature/PROJ-1234-description`, `fix/ABC-567`
+- Footer references: `Ticket: PROJ-1234`, `Issue: #123`, `Ref: ABC-567`
+
+Build a mapping of ticket numbers to their associated commits/MRs. A single ticket may span multiple commits or MRs. When a ticket number is found, associate it with the corresponding change entry in the categorization step.
+
 ### Fallback: Commit log + diff analysis
 
 If merge commits don't contain useful MR titles (or the repo uses rebase/squash without MR references), fall back to:
@@ -107,7 +125,7 @@ If merge commits don't contain useful MR titles (or the repo uses rebase/squash 
 3. Read the diff to understand what each group of changes actually does
 4. Write human-readable descriptions based on the actual code changes, not just commit messages
 
-In both cases, read the actual diff for each change group to write accurate descriptions. Commit messages alone are often vague or misleading.
+In all cases, read the actual diff for each change group to write accurate descriptions. Commit messages alone are often vague or misleading.
 
 ## Step 5: Categorize changes
 
@@ -124,6 +142,7 @@ Organize all changes into these categories (omit any category with no entries):
 For each change entry, include:
 - A clear, human-readable description of what changed
 - The files or areas affected (keep brief)
+- The ticket/issue number if available (e.g., `PROJ-1234`, `#123`)
 - The MR/PR number if available
 
 ## Step 6: Identify affected areas
@@ -199,20 +218,20 @@ This analysis feeds Document 3 (Technical Debt Report). Scan the entire release 
 
 ## Step 9: Generate three documents
 
-Create the output directory:
+Derive the release version name from the new branch: strip any `release/` prefix and replace `/` with `-` (e.g., `release/5.2.3` becomes `5.2.3`, `feature/foo` becomes `feature-foo`).
+
+Create the output directory for this release:
 ```bash
-mkdir -p <basedir>/releases
+mkdir -p <basedir>/releases/<version-name>
 ```
 
-Replace `/` in branch names with `-` for filenames (e.g., `release/1.3` becomes `release-1.3`).
-
-If files with these names already exist, append a counter: `-2`, `-3`, etc.
+If files with these names already exist, overwrite them.
 
 ---
 
 ### Document 1: Customer Release Notes
 
-Filename: `<basedir>/releases/release-<new-branch-name>-<YYYY-MM-DD>-customer.md`
+Filename: `<basedir>/releases/<version-name>/<YYYY-MM-DD>-customer.md`
 
 This is for end users, stakeholders, and product managers. No code, no file paths, no technical jargon. Focus on what the user can now do, what was fixed, and what they need to know.
 
@@ -266,7 +285,7 @@ What can they do now that they couldn't before? What problems were fixed?>
 
 ### Document 2: Engineering Release Notes
 
-Filename: `<basedir>/releases/release-<new-branch-name>-<YYYY-MM-DD>-engineering.md`
+Filename: `<basedir>/releases/<version-name>/<YYYY-MM-DD>-engineering.md`
 
 This is the full technical release documentation for developers, QA, and DevOps.
 
@@ -296,18 +315,24 @@ Major architectural changes? New subsystems? Migration from X to Y?>
 
 ## Features
 
-- **<Feature name>** — <Technical description including approach and architecture>
+- **<TICKET-123>** **<Feature name>** — <Technical description including approach and architecture>
   _(<files/areas>, MR !N)_
+
+If no ticket number is available, omit the ticket prefix and use just the feature name.
 
 ## Bug Fixes
 
-- **<Fix summary>** — <Root cause and fix approach>
+- **<TICKET-456>** **<Fix summary>** — <Root cause and fix approach>
   _(<files/areas>, MR !N)_
+
+If no ticket number is available, omit the ticket prefix and use just the fix summary.
 
 ## Improvements
 
-- **<Improvement>** — <What changed technically and why>
-  _(<files/areas>)_
+- **<TICKET-789>** **<Improvement>** — <What changed technically and why>
+  _(<files/areas>, MR !N)_
+
+If no ticket number is available, omit the ticket prefix and use just the improvement name.
 
 ## Infrastructure / DevOps
 
@@ -389,7 +414,7 @@ For each tech debt item identified in Step 8:
 
 Then generate a release-specific summary:
 
-Filename: `<basedir>/releases/release-<new-branch-name>-<YYYY-MM-DD>-tech-debt.md`
+Filename: `<basedir>/releases/<version-name>/<YYYY-MM-DD>-tech-debt.md`
 
 This document summarizes the tech debt picture for this specific release but references the persistent backlog for details.
 
