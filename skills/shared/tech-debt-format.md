@@ -10,6 +10,7 @@ The master list is a clean, scannable table with wikilinks to detail files. One 
 
 ```markdown
 ---
+last_updated: YYYY-MM-DD HH:MM
 tags:
   - tech-debt
   - index

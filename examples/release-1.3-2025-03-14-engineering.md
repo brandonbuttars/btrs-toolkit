@@ -1,6 +1,7 @@
 ---
 title: "Release Notes, Example App Version 1.3"
 date: 2025-03-14 14:30
+last_updated: 2025-03-14 14:30
 type: release-notes-engineering
 release: "release/1.3"
 compared_against: "release/1.2"

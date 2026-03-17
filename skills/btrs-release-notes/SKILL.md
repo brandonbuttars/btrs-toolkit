@@ -328,6 +328,7 @@ This is for end users, stakeholders, and product managers. No code, no file path
 ---
 title: "What's New in <version/branch>"
 date: YYYY-MM-DD HH:MM
+last_updated: YYYY-MM-DD HH:MM
 type: release-notes-customer
 release: "<new-branch>"
 compared_against: "<old-branch>"
@@ -394,6 +395,7 @@ This is the full technical release documentation for developers, QA, and DevOps.
 ---
 title: "Release Notes, <project-name> Version <new-version>"
 date: YYYY-MM-DD HH:MM
+last_updated: YYYY-MM-DD HH:MM
 type: release-notes-engineering
 release: "<new-branch>"
 compared_against: "<old-branch>"
@@ -539,7 +541,16 @@ or walkthrough notes relevant to the changes in this release.>
 
 ### Document 3: Technical Debt Summary & Backlog Update
 
-Instead of a standalone tech debt report, this step feeds items into the persistent tech debt backlog and generates a release-specific summary document.
+This step feeds items into the persistent tech debt backlog and generates a
+release-specific summary document.
+
+**IMPORTANT:** The tech debt files at the basedir level are:
+- `<basedir>/tech-debt.md` — the persistent master list (ONE file, always updated in place)
+- `<basedir>/tech-debt/` — directory of individual detail files (one per item)
+
+Do NOT create `<basedir>/tech-debt-notes.md` or any other tech debt file at the
+basedir level. The release-specific summary goes ONLY inside the release folder:
+`<basedir>/releases/<new-branch>/tech-debt-notes.md`
 
 Read the shared tech debt format reference:
 ```
@@ -621,6 +632,7 @@ This document summarizes the tech debt picture for this specific release but ref
 ---
 title: "Technical Debt Summary: <new-branch>"
 date: YYYY-MM-DD HH:MM
+last_updated: YYYY-MM-DD HH:MM
 type: release-notes-tech-debt
 release: "<new-branch>"
 compared_against: "<old-branch>"
@@ -706,6 +718,7 @@ directory and the document already has descriptions and image links ready.
 ---
 title: "Screenshot Notes: <new-branch>"
 date: YYYY-MM-DD HH:MM
+last_updated: YYYY-MM-DD HH:MM
 type: release-notes-screenshots
 release: "<new-branch>"
 compared_against: "<old-branch>"
