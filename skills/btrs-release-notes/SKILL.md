@@ -87,6 +87,15 @@ fields per component:
 - If `version.json` does not exist: the Component Versions section will be omitted
   from the engineering notes, and Word document generation will be skipped in Step 10.
 
+## Step 1c: Capture timestamp
+
+Record the current date and time for use in document frontmatter and body:
+```bash
+date "+%Y-%m-%d %H:%M"
+```
+
+Use this value wherever `YYYY-MM-DD HH:MM` appears in the templates.
+
 ## Step 2: Gather raw data
 
 ```bash
@@ -272,7 +281,7 @@ This is for end users, stakeholders, and product managers. No code, no file path
 ```markdown
 ---
 title: "What's New in <version/branch>"
-date: YYYY-MM-DD
+date: YYYY-MM-DD HH:MM
 type: release-notes-customer
 release: "<new-branch>"
 compared_against: "<old-branch>"
@@ -282,6 +291,8 @@ tags:
 ---
 
 # What's New in <version/branch>
+
+**Generated:** YYYY-MM-DD HH:MM
 
 ## Component Versions
 
@@ -333,7 +344,7 @@ This is the full technical release documentation for developers, QA, and DevOps.
 ```markdown
 ---
 title: "Release Notes, <project-name> Version <new-version>"
-date: YYYY-MM-DD
+date: YYYY-MM-DD HH:MM
 type: release-notes-engineering
 release: "<new-branch>"
 compared_against: "<old-branch>"
@@ -350,6 +361,8 @@ tags:
 # Release Notes, <project-name> Version <new-version>
 
 ENGINEERING RELEASE NOTES (<old-version> – <new-version>)
+
+**Generated:** YYYY-MM-DD HH:MM
 
 ## Component Versions
 
@@ -549,7 +562,7 @@ This document summarizes the tech debt picture for this specific release but ref
 ```markdown
 ---
 title: "Technical Debt Summary: <new-branch>"
-date: YYYY-MM-DD
+date: YYYY-MM-DD HH:MM
 type: release-notes-tech-debt
 release: "<new-branch>"
 compared_against: "<old-branch>"
@@ -563,6 +576,8 @@ tags:
 ---
 
 # Technical Debt Summary: <new-branch>
+
+**Generated:** YYYY-MM-DD HH:MM
 
 ## Overview
 

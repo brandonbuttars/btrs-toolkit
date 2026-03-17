@@ -1,6 +1,6 @@
 ---
 title: "What's New in release/1.3"
-date: 2025-03-14
+date: 2025-03-14 14:30
 type: release-notes-customer
 release: "release/1.3"
 compared_against: "release/1.2"
@@ -10,6 +10,8 @@ tags:
 ---
 
 # What's New in release/1.3
+
+**Generated:** 2025-03-14 14:30
 
 ## Component Versions
 

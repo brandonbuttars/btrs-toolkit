@@ -1,6 +1,6 @@
 ---
 title: "Release Notes, Example App Version 1.3"
-date: 2025-03-14
+date: 2025-03-14 14:30
 type: release-notes-engineering
 release: "release/1.3"
 compared_against: "release/1.2"
@@ -17,6 +17,8 @@ tags:
 # Release Notes, Example App Version 1.3
 
 ENGINEERING RELEASE NOTES (1.2 – 1.3)
+
+**Generated:** 2025-03-14 14:30
 
 ## Component Versions
 
