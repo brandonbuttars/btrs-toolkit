@@ -12,7 +12,7 @@ description: >
   "release documentation", "what's in this release", "diff between releases",
   "release summary", "prepare release notes for", "btrs release".
 disable-model-invocation: true
-allowed-tools: Bash(git *), Bash(which *), Bash(pandoc *), Bash(rm *), Bash(mkdir *), Bash(python3 *), Read, Grep, Glob
+allowed-tools: Bash(git *), Bash(which *), Bash(pandoc *), Bash(rm *), Bash(mkdir *), Bash(python3 *), Bash(cat *), Bash(test *), Read, Write, Grep, Glob
 argument-hint: <old-branch> <new-branch>
 ---
 
@@ -52,6 +52,22 @@ If either doesn't exist, check if it's a remote branch and fetch:
 git fetch origin <branch> 2>/dev/null
 git rev-parse --verify origin/<branch> 2>/dev/null
 ```
+
+## Step 1b: Read version.json
+
+Check if `version.json` exists at the project root and read it. This file provides
+the Component Versions table for the engineering release notes and is required for
+Word document generation.
+
+```bash
+test -f version.json && cat version.json || echo "VERSION_JSON_NOT_FOUND"
+```
+
+- If `version.json` exists: parse the JSON object. Each key is a component name,
+  each value is a version string. Store this data for use in Step 9 (Document 2)
+  and Step 10 (Word generation).
+- If `version.json` does not exist: the Component Versions section will be omitted
+  from the engineering notes, and Word document generation will be skipped in Step 10.
 
 ## Step 2: Gather raw data
 
@@ -317,24 +333,6 @@ ENGINEERING RELEASE NOTES (<old-version> – <new-version>)
 | <component-name> | <version> |
 | ... | ... |
 
-Populate this table from `version.json` at the project root. The file should
-contain a JSON object with component names as keys and version strings as values,
-for example:
-```json
-{
-  "SkyDome Manager": "5.2.3",
-  "Ground Control": "8.1.2",
-  "DroneHunter": "8.1.3"
-}
-```
-
-Read and parse `version.json`:
-```bash
-cat version.json
-```
-
-If `version.json` does not exist, omit this section entirely.
-
 <1-3 sentence summary of the main goal or focus of this release.>
 
 ## Change Summary
@@ -436,6 +434,12 @@ or walkthrough notes relevant to the changes in this release.>
 
 </details>
 ```
+
+**IMPORTANT — Component Versions table:**
+- If `version.json` was found in Step 1b, populate the Component Versions table
+  using the data from that file. Each key becomes a row: key = Component, value = Version.
+- If `version.json` was NOT found, omit the `## Component Versions` section and
+  its table entirely from the output.
 
 ---
 
