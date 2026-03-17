@@ -171,6 +171,14 @@ If merge commits don't contain useful MR titles (or the repo uses rebase/squash 
 
 In all cases, read the actual diff for each change group to write accurate descriptions. Commit messages alone are often vague or misleading.
 
+**CRITICAL — Accuracy requirement:**
+Do NOT assume what code does based on function names, variable names, component
+names, commit messages, or MR titles. These are frequently inaccurate, aspirational,
+or misleading. You MUST read the actual diff and source code to understand what each
+change actually does before writing any description. If a commit message says
+"add filtering" but the diff only adds a dropdown with no filter logic, describe
+what was actually built — not what the message claims.
+
 ## Step 5: Categorize changes
 
 Organize all changes into these categories (omit any category with no entries):
@@ -188,6 +196,27 @@ For each change entry, include:
 - The files or areas affected (keep brief)
 - The ticket/issue number if available (e.g., `PROJ-1234`, `#123`)
 - The MR/PR number if available
+- A `[UI]` tag at the end of the line if the change adds, modifies, or removes
+  any user-visible interface element (components, pages, layouts, styles, icons,
+  modals, forms, buttons, navigation, etc.). This tag signals that new screenshots
+  may be needed for documentation.
+
+## Step 5b: Verify accuracy of every change description
+
+**You MUST verify each change description against the actual code before finalizing.**
+
+For every item written in Step 5:
+1. Re-read the relevant diff hunks for that change
+2. Confirm the description matches what the code actually does — not what commit
+   messages, branch names, or MR titles say it does
+3. Check that claimed functionality actually exists in the diff (e.g., if you wrote
+   "adds search filtering", verify filter logic is present — not just a UI element
+   labeled "filter")
+4. Verify the `[UI]` tag is applied to every item that touches templates, components,
+   stylesheets, layouts, or any file that affects what the user sees on screen
+5. If a description is inaccurate, rewrite it based on what the code actually does
+
+Do not skip this step. Inaccurate release notes erode trust and create confusion.
 
 ## Step 6: Identify affected areas
 
@@ -322,16 +351,19 @@ What can they do now that they couldn't before? What problems were fixed?>
 ## New Features
 
 - **<Feature name>** — <User-facing description of what this enables. Write as if
-  explaining to someone who uses the product but doesn't read code.>
+  explaining to someone who uses the product but doesn't read code.> `[UI]`
 
 ## Fixes
 
 - **<Fix summary>** — <What was broken from the user's perspective and that it's
-  now resolved. No stack traces or file names.>
+  now resolved. No stack traces or file names.> `[UI]`
 
 ## Improvements
 
 - **<Improvement>** — <What's better now. Performance, usability, reliability.>
+
+Append `[UI]` to any item that changes what the user sees on screen. Omit for
+non-visual changes (performance, backend, etc.).
 
 ## Breaking Changes
 
@@ -398,12 +430,16 @@ related changes regardless of whether they are features, fixes, or improvements.
 
 - <Description of change. Include technical detail: approach, root cause for fixes,
   architecture for features. Reference files/areas and MR numbers inline.>
-  _(<files/areas>, MR !N)_
+  _(<files/areas>, MR !N)_ `[UI]`
 
 ### <Another subtitle>
 
 - <Change description>
   _(<files/areas>, MR !N)_
+
+Append `[UI]` at the end of any line item that adds, modifies, or removes
+user-visible interface elements. Omit the tag for backend-only, infra, or
+non-visual changes.
 
 Continue with as many subtitles as needed to cover all changes. Omit categories
 with no entries. If a change doesn't fit a group, use a "General" or

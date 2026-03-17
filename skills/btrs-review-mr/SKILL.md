@@ -91,6 +91,14 @@ Then read the audit-specific references based on what's in the diff. Check the f
 
 For each changed file, perform a line-by-line review. Read the full diff hunk for each file and assess across all applicable categories. The categories below are always checked; the shared audit references provide deeper guidance for their respective areas.
 
+**CRITICAL — Accuracy requirement:**
+Do NOT assume what code does based on function names, variable names, component
+names, commit messages, or MR titles. These are frequently inaccurate, aspirational,
+or misleading. You MUST read the actual diff and source code to understand what each
+change actually does before writing any description or finding. If a commit message
+says "add filtering" but the diff only adds a dropdown with no filter logic, describe
+what was actually built — not what the message claims.
+
 **Correctness**
 - Logic errors, off-by-one mistakes, incorrect conditionals
 - Null/undefined handling, missing error cases
@@ -173,6 +181,24 @@ Classify each finding by severity:
 - **Suggestion** — Improvements to readability, performance, or maintainability. Nice to have.
 - **Note** — Observations, questions, or context for the author. Informational only.
 
+## Step 4b: Verify accuracy of all findings and descriptions
+
+**You MUST verify each finding and description against the actual code before finalizing.**
+
+For every finding and description written in Step 4:
+1. Re-read the relevant diff hunks
+2. Confirm the description matches what the code actually does — not what commit
+   messages, branch names, or MR titles say it does
+3. Check that claimed functionality actually exists in the diff (e.g., if you wrote
+   "adds validation logic", verify validation is present — not just a field labeled
+   "validated")
+4. Verify the `[UI]` tag is applied to every file that touches templates, components,
+   stylesheets, layouts, or any code that affects what the user sees on screen
+5. If a description or finding is inaccurate, rewrite it based on what the code
+   actually does
+
+Do not skip this step. Inaccurate reviews erode trust and waste the author's time.
+
 ## Step 5: Generate the review document
 
 Create the output directory if it doesn't exist, then write the review:
@@ -208,7 +234,8 @@ tags:
 ## Summary
 
 <2-3 paragraph overall assessment. What is this MR doing? Is it ready to merge?
-What are the most important concerns?>
+What are the most important concerns? Base this on what the code actually does,
+not on commit messages or MR titles.>
 
 > [!<callout-type>] Risk Assessment: <Low | Medium | High | Critical>
 > <Brief reasoning for the risk level. Consider scope of changes, areas touched,
@@ -222,10 +249,16 @@ Use the appropriate callout type for the risk level:
 
 ## Changed Files
 
-| File | Status | +/- | Category |
-|------|--------|-----|----------|
-| [[path/to/file.ts]] | Modified | +25/-10 | Frontend |
-| ... | ... | ... | ... |
+| File | Status | +/- | Category | UI |
+|------|--------|-----|----------|----|
+| [[path/to/file.ts]] | Modified | +25/-10 | Frontend | `[UI]` |
+| [[path/to/api.ts]] | Modified | +10/-5 | Backend | |
+| ... | ... | ... | ... | ... |
+
+Mark the UI column with `[UI]` for any file that adds, modifies, or removes
+user-visible interface elements (components, pages, layouts, styles, icons,
+modals, forms, buttons, navigation, etc.). This signals that screenshots
+may need to be updated for documentation.
 
 ## Findings
 
