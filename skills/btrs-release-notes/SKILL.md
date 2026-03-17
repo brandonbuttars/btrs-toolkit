@@ -476,11 +476,60 @@ Create the directories if they don't exist:
 mkdir -p <basedir>/tech-debt
 ```
 
-For each tech debt item identified in Step 8:
-1. Check `<basedir>/tech-debt-notes.md` for duplicates (search titles and grep detail files for same file paths)
-2. If no duplicate exists, create a new detail file in `<basedir>/tech-debt/` and add a row to `<basedir>/tech-debt-notes.md`
-3. If a duplicate exists and is Open, update the detail file with the new occurrence
-4. Set the source to `release/<old-branch>→<new-branch> (YYYY-MM-DD)`
+#### Step 9a: Read the existing backlog
+
+**You MUST read the existing backlog before writing anything.** This is critical
+to avoid duplicates and to correctly update existing items.
+
+1. Read the master list to get all current items:
+```bash
+cat <basedir>/tech-debt.md 2>/dev/null || echo "NO_EXISTING_BACKLOG"
+```
+
+2. If the master list exists, read ALL existing detail files to understand what's
+   already tracked:
+```bash
+ls <basedir>/tech-debt/*.md 2>/dev/null
+```
+Then read each detail file. You need to know:
+- What titles and file paths are already tracked
+- What the current highest ID is (for auto-incrementing new IDs)
+- Which items are Open vs Done (Open items can be updated; Done items that
+  reappear mean regression — create a new item)
+
+3. Build a mental map of existing items: ID, title, status, affected files.
+
+#### Step 9b: Reconcile new findings with existing backlog
+
+For EACH tech debt item identified in Step 8, compare against the existing backlog:
+
+**If a matching item exists and is Open:**
+- Do NOT create a new item
+- Update the existing detail file: add the new occurrence to its Description
+  or Affected Files section
+- Update the source in the master list row if the new release is more recent
+- Track this as an "updated item" for the release summary
+
+**If a matching item exists and is Done:**
+- This is a regression — create a NEW item with a new ID
+- In the Context section, add: "Previously addressed in [[<old-ID>]], but has regressed."
+- Track this as a "new item" for the release summary
+
+**If no matching item exists:**
+- Create a new detail file in `<basedir>/tech-debt/` with the next available ID
+- Add a new row to `<basedir>/tech-debt.md`
+- Set source to `release/<old-branch>→<new-branch> (YYYY-MM-DD)`
+- Track this as a "new item" for the release summary
+
+**Matching criteria** (check in order):
+1. Same or very similar title text
+2. Same affected file paths (grep detail files for the file paths)
+3. Same category + same area + overlapping description
+
+After processing all items, rewrite `<basedir>/tech-debt.md` with the updated
+table (existing rows preserved, updated rows modified, new rows appended).
+
+#### Step 9c: Generate the release-specific summary
 
 Then generate a release-specific summary:
 
