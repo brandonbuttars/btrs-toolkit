@@ -11,6 +11,21 @@ tags:
 
 # What's New in release/1.3
 
+## Component Versions
+
+<!-- Populated from version.json at project root -->
+
+| Component | Version |
+|-----------|---------|
+| Manager | 5.2.3 |
+| TrueView | 4.6.1 |
+| SkyDome | 5.2.3 |
+| Ground Control | 8.1.2 |
+| DroneHunter | 8.1.3 |
+| Arducopter | 4.4.4.6 |
+| Target Assignment | 1.0.0 |
+| EULA | 9.15.22 |
+
 ## Highlights
 
 This release focuses on giving you more control over how you view your data. The dashboard now supports filtering by date range and status, so you can zero in on exactly what you need. We've also fixed several issues that affected map performance when monitoring large areas, and improved the overall responsiveness of the interface.

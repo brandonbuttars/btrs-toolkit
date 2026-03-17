@@ -284,6 +284,13 @@ tags:
 
 # What's New in <version/branch>
 
+## Component Versions
+
+| Component | Version |
+|-----------|---------|
+| <component-name> | <version> |
+| ... | ... |
+
 ## Highlights
 
 <3-5 sentences summarizing the most impactful changes from the user's perspective.
@@ -454,11 +461,14 @@ or walkthrough notes relevant to the changes in this release.>
 </details>
 ```
 
-**IMPORTANT — Component Versions table:**
-- If `version.json` was found in Step 1b, populate the Component Versions table
-  using the data from that file. Each key becomes a row: key = Component, value = Version.
+**IMPORTANT — Component Versions table (applies to BOTH Document 1 and Document 2):**
+- If `version.json` was found in Step 1b, you MUST include the `## Component Versions`
+  section with the table in BOTH the customer notes AND the engineering notes.
+  It MUST be the FIRST section after the title (before Highlights in customer notes,
+  before the summary paragraph in engineering notes). Populate each row from the
+  parsed version.json data: key = Component display name, value = assembled version string.
 - If `version.json` was NOT found, omit the `## Component Versions` section and
-  its table entirely from the output.
+  its table entirely from BOTH documents.
 
 ---
 
