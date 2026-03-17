@@ -1,10 +1,10 @@
 ---
 name: btrs-release-notes
 description: >
-  Generate release documentation by comparing two branches. Produces three
+  Generate release documentation by comparing two branches. Produces four
   markdown files: customer-facing release notes (high-level, non-technical),
-  engineering release notes (detailed, technical), and a technical debt
-  report with specific recommended changes. Use when the user wants release
+  engineering release notes (detailed, technical), a technical debt
+  report, and a screenshot notes outline for UI changes. Use when the user wants release
   notes, a changelog, release documentation, or asks to compare releases
   or branches for a release. Trigger on phrases like "release notes",
   "what changed between releases", "generate changelog", "compare releases",
@@ -17,11 +17,12 @@ argument-hint: <old-branch> <new-branch>
 
 # Release Notes Skill
 
-Generate three levels of release documentation by comparing two branches:
+Generate four levels of release documentation by comparing two branches:
 
 1. **Customer release notes** — High-level, non-technical. What's new, what's fixed, what's improved. Written for end users, stakeholders, and product managers.
 2. **Engineering release notes** — Detailed and technical. Full change categorization, affected areas, risk assessment, deployment notes. Written for developers, QA, and DevOps.
-3. **Technical debt report** — Quality analysis of the release diff. Identifies patterns of concern, consistency issues, and specific recommended changes. Written for the engineering team to plan follow-up work.
+3. **Technical debt report** — Quality analysis of the release code. Identifies patterns of concern, consistency issues, and specific recommended changes. Written for the engineering team to plan follow-up work.
+4. **Screenshot notes** — Pre-built outline for capturing screenshots of all UI changes. Grouped by feature area with descriptions, expected visuals, and pre-linked image paths. Written for documentation and QA.
 
 ## Step 0: Read config
 
@@ -302,13 +303,16 @@ what was introduced in this release.
 - Are there functions, utilities, or patterns that duplicate things already in the codebase?
 - Could any code be consolidated with existing code to reduce duplication?
 
-## Step 9: Generate three documents
+## Step 9: Generate four documents
 
 Use the new branch name exactly as provided for the folder name. Do not strip prefixes, replace characters, or transform it in any way.
 
 ```bash
 mkdir -p "<basedir>/releases/<new-branch>"
+mkdir -p "<basedir>/releases/<new-branch>/assets"
 ```
+
+The `assets/` directory is where screenshots will be stored for this release.
 
 If files with these names already exist, overwrite them.
 
@@ -687,13 +691,83 @@ code and were marked Done. If none, omit this section.>
 _Run `/btrs-do-tech-debt <ID>` to start working on an item._
 ```
 
+---
+
+### Document 4: Screenshot Notes
+
+Filename: `<basedir>/releases/<new-branch>/screenshot-notes.md`
+
+This document is a pre-built outline for capturing screenshots of UI changes in
+the release. It is generated from every `[UI]`-tagged item found across the
+customer and engineering notes. The user drops screenshots into the `assets/`
+directory and the document already has descriptions and image links ready.
+
+```markdown
+---
+title: "Screenshot Notes: <new-branch>"
+date: YYYY-MM-DD HH:MM
+type: release-notes-screenshots
+release: "<new-branch>"
+compared_against: "<old-branch>"
+tags:
+  - release
+  - release/screenshots
+---
+
+# Screenshot Notes: <new-branch>
+
+**Generated:** YYYY-MM-DD HH:MM
+**Latest Release:** <new-branch>
+
+Screenshots for this release should be saved to:
+`<basedir>/releases/<new-branch>/assets/`
+
+Naming convention: `<new-branch>-<feature-slug>.<ext>`
+Example: `release-5.2.3-dashboard-filters.png`
+
+---
+
+## <Subtitle — grouped by area/feature, matching Change Summary subtitles>
+
+### <Feature or change name>
+
+<Description of what to capture: which screen, what state, what the user should
+see. Be specific enough that someone unfamiliar with the code knows exactly what
+to screenshot.>
+
+**Expected screenshot:** <What the screenshot should show — the new UI element,
+the fixed behavior, the updated layout, etc.>
+
+![<feature-slug>](assets/<new-branch>-<feature-slug>.png)
+
+---
+
+<Repeat for each [UI]-tagged item. Group items under the same subtitles used in
+the Change Summary. If multiple UI items belong to the same area, they share a
+subtitle but each gets its own subsection with its own image link.>
+```
+
+**How to populate this document:**
+
+1. Collect every item from Documents 1 and 2 that has a `[UI]` tag
+2. Group them by the same subtitles/areas used in the Change Summary
+3. For each item, create a subsection with:
+   - The feature or change name as a `###` heading
+   - A description of what the screenshot should show (which page, which state,
+     what the user should see after the change)
+   - A pre-filled markdown image link pointing to `assets/<new-branch>-<feature-slug>.png`
+     where `<feature-slug>` is a lowercase kebab-case version of the feature name
+4. If no `[UI]`-tagged items exist, still create the file with a note:
+   "No UI changes in this release — no screenshots needed."
+
 ## Step 10: Present the results
 
 After writing all files and updating the backlog, tell the user:
-- The file paths for all three documents
+- The file paths for all four documents and the assets directory
 - The customer highlights summary
 - Count of changes by category from the engineering notes
 - Risk assessment and deployment notes
 - How many new tech debt items were added to the backlog
 - How many existing items were updated
 - The top 2-3 highest-priority items to tackle next (with IDs for `/btrs-do-tech-debt`)
+- How many screenshots are needed (count of `[UI]`-tagged items) and where to save them
