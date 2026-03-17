@@ -4,15 +4,14 @@ description: >
   Generate release documentation by comparing two branches. Produces three
   markdown files: customer-facing release notes (high-level, non-technical),
   engineering release notes (detailed, technical), and a technical debt
-  report with specific recommended changes. Also generates Word (.docx)
-  documents when pandoc is available. Use when the user wants release
+  report with specific recommended changes. Use when the user wants release
   notes, a changelog, release documentation, or asks to compare releases
   or branches for a release. Trigger on phrases like "release notes",
   "what changed between releases", "generate changelog", "compare releases",
   "release documentation", "what's in this release", "diff between releases",
   "release summary", "prepare release notes for", "btrs release".
 disable-model-invocation: true
-allowed-tools: Bash(git *), Bash(which *), Bash(pandoc *), Bash(rm *), Bash(mkdir *), Bash(python3 *), Bash(cat *), Bash(test *), Read, Write, Grep, Glob
+allowed-tools: Bash(git *), Bash(cat *), Bash(test *), Bash(mkdir *), Read, Write, Grep, Glob
 argument-hint: <old-branch> <new-branch>
 ---
 
@@ -609,115 +608,10 @@ release. If none, omit this section.>
 _Run `/btrs-do-tech-debt <ID>` to start working on an item._
 ```
 
-## Step 10: Generate Word documents
-
-Word documents are only generated when `version.json` exists at the project root.
-This file provides the Component Versions table data and signals that the project
-is configured for formal release documentation.
-
-```bash
-test -f version.json && echo "version.json found" || echo "version.json not found"
-```
-
-If `version.json` does not exist, skip this entire step and inform the user:
-```
-Skipping Word document generation — no version.json found at project root.
-To enable .docx output, create a version.json file with component names and versions.
-```
-
-If `version.json` exists, check if pandoc is available:
-```bash
-which pandoc 2>/dev/null
-```
-
-If pandoc is not installed, inform the user and suggest installing it:
-```
-pandoc is not installed. To generate Word documents, install it with:
-  brew install pandoc
-Then re-run the release notes generation, or convert manually:
-  pandoc engineering-notes.md -o engineering-notes.docx --reference-doc=<reference-template>
-```
-
-If both `version.json` and pandoc are available, generate Word documents:
-
-### Prepare markdown for Word conversion
-
-Before converting, create a temporary copy of each markdown file with Obsidian-specific syntax removed (callout blocks, wikilinks, etc.) since pandoc does not understand these:
-
-1. Strip YAML frontmatter (`---` blocks at the top)
-2. Convert Obsidian callouts (`> [!type] Title\n> content`) to bold paragraphs (`**Title**\ncontent`)
-3. Remove wikilink syntax (`[[text]]` → `text`)
-4. Keep everything else (tables, headings, bullet lists, bold, italic)
-
-### Convert to Word
-
-Use `--shift-heading-level-by=-1` so that the markdown `# Title` maps to the Word "Title" style, `## Sections` map to "Heading 1", and `### Subtitles` map to "Heading 2". This matches the example document styling hierarchy.
-
-```bash
-# Use the reference template if it exists for consistent styling
-REFERENCE_DOC="~/.claude/skills/btrs-release-notes/references/release-reference.docx"
-
-PANDOC_OPTS="--shift-heading-level-by=-1"
-if [ -f "$REFERENCE_DOC" ]; then
-  PANDOC_OPTS="$PANDOC_OPTS --reference-doc=$REFERENCE_DOC"
-fi
-
-pandoc "<basedir>/releases/<new-branch>/engineering-notes-clean.md" \
-  -o "<basedir>/releases/<new-branch>/engineering-notes.docx" \
-  $PANDOC_OPTS
-
-pandoc "<basedir>/releases/<new-branch>/customer-notes-clean.md" \
-  -o "<basedir>/releases/<new-branch>/customer-notes.docx" \
-  $PANDOC_OPTS
-
-# Clean up temporary files
-rm -f "<basedir>/releases/<new-branch>/engineering-notes-clean.md"
-rm -f "<basedir>/releases/<new-branch>/customer-notes-clean.md"
-```
-
-### Post-process: Apply Subtitle style
-
-Pandoc cannot apply the Word "Subtitle" style from markdown. After conversion, use
-python-docx to change the version range line (the paragraph immediately after the
-Title) to the Subtitle style:
-
-```python
-from docx import Document
-
-for docx_path in ["engineering-notes.docx", "customer-notes.docx"]:
-    full_path = f"<basedir>/releases/<new-branch>/{docx_path}"
-    try:
-        doc = Document(full_path)
-        # The subtitle is the paragraph right after the Title
-        for i, para in enumerate(doc.paragraphs):
-            if para.style.name == "Title" and i + 1 < len(doc.paragraphs):
-                next_para = doc.paragraphs[i + 1]
-                if "RELEASE NOTES" in next_para.text.upper() or "–" in next_para.text:
-                    next_para.style = doc.styles["Subtitle"]
-                break
-        doc.save(full_path)
-    except Exception:
-        pass  # Non-fatal: subtitle just won't have special styling
-```
-
-Run this as an inline python3 script after the pandoc conversion.
-
-The reference template (`release-reference.docx`) is copied from the example document
-(`examples/release-notes-example.docx`) and provides consistent styling:
-- Title: 28pt, default dark color
-- Subtitle: 14pt, gray (#595959)
-- Heading 1: 20pt, teal (#0F4761)
-- Heading 2: 16pt, teal (#0F4761)
-- Heading 3: 14pt, teal (#0F4761)
-- Tables: Header row fill #44546A with white text
-- Body text: Default system font (Aptos/Calibri)
-
-If no reference template exists, pandoc's default styling will be used. The user can create a custom reference template by modifying a generated .docx file's styles and saving it to the reference path above.
-
-## Step 11: Present the results
+## Step 10: Present the results
 
 After writing all files and updating the backlog, tell the user:
-- The file paths for all documents (markdown and Word if generated)
+- The file paths for all three documents
 - The customer highlights summary
 - Count of changes by category from the engineering notes
 - Risk assessment and deployment notes
