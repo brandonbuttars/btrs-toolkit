@@ -209,56 +209,69 @@ Based on the changes, assess:
 - Whether new dependencies need to be installed
 - Any changes that require special deployment steps
 
-## Step 8: Analyze technical debt across the release diff
+## Step 8: Analyze technical debt against the latest release code
 
-This analysis feeds Document 3 (Technical Debt Report). Scan the entire release diff for cross-cutting patterns — not per-file issues but concerns across the release as a whole.
+This analysis feeds Document 3 (Technical Debt Report). Unlike the change-focused
+analysis in earlier steps, tech debt analysis is based on the **full codebase at
+the new (latest) branch** — not just the diff. Check out or read from the new
+branch to scan the current state of the code.
+
+```bash
+# Get the full file listing at the new branch to understand the codebase scope
+git ls-tree -r --name-only <new-branch> | head -200
+```
+
+Read source files from the new branch as needed to assess the categories below.
+Focus on areas that were touched by the release diff (from Step 2) but evaluate
+them in the context of the full codebase — existing tech debt matters, not just
+what was introduced in this release.
 
 **Component architecture**
-- Are new components following Atomic Design patterns (Atoms, Molecules, Organisms, Templates, Pages) consistent with the existing codebase?
-- Are there repeated UI patterns across the release that should be extracted into reusable components?
-- Are new components monolithic where they should be composed from smaller pieces?
+- Are components following Atomic Design patterns (Atoms, Molecules, Organisms, Templates, Pages) consistent with the existing codebase?
+- Are there repeated UI patterns that should be extracted into reusable components?
+- Are components monolithic where they should be composed from smaller pieces?
 
 **CSS & color consistency**
-- Are new styles using existing CSS variables, design tokens, and theming systems?
-- Are there new hardcoded colors that should reference the existing palette?
+- Are styles using existing CSS variables, design tokens, and theming systems?
+- Are there hardcoded colors that should reference the existing palette?
 - Are there near-duplicate colors, shades, or opacity variants that should be consolidated?
 - Are there opportunities to reduce the total number of color/spacing/font values?
 
 **Reactivity & state management**
-- Are new reactive patterns consistent with existing conventions in the codebase?
+- Are reactive patterns consistent with existing conventions in the codebase?
 - Are there subscription or effect leaks — reactive code without corresponding cleanup?
 - Is there unnecessary reactivity (state that should be derived/computed)?
 - Are there cascading reactivity chains that indicate fragile state architecture?
 
 **Endpoints & data connections**
-- Do new REST endpoints, WebSocket handlers, or other data connections follow consistent patterns for validation, error handling, and auth?
+- Do REST endpoints, WebSocket handlers, or other data connections follow consistent patterns for validation, error handling, and auth?
 - Are there endpoints missing proper error responses, rate limiting, or input validation?
 - Is connection lifecycle (open/close/error/reconnect) fully handled for WebSocket and streaming connections?
 
 **Error handling & resilience**
-- Do new UI areas have proper loading, error, and empty states?
+- Do UI areas have proper loading, error, and empty states?
 - Are there components where a failed data source would crash a parent rather than degrade gracefully?
 - Are try/catch blocks present around operations that can fail?
 
 **Bundle & imports**
-- Are there new large dependencies that could be replaced by lighter alternatives or existing utilities?
+- Are there large dependencies that could be replaced by lighter alternatives or existing utilities?
 - Are there barrel imports pulling in more than needed?
-- Are there code splitting opportunities for new routes or heavy components?
+- Are there code splitting opportunities for routes or heavy components?
 
 **TypeScript** *(only if the project uses TypeScript)*
-- Are there new `any` types, loose generics, or type assertions that weaken type safety?
-- Are new types consistent with existing type definitions?
+- Are there `any` types, loose generics, or type assertions that weaken type safety?
+- Are types consistent with existing type definitions?
 
 **Accessibility** *(only if the project has a11y patterns or is a user-facing web app)*
-- Do new interactive components have keyboard support and ARIA attributes?
+- Do interactive components have keyboard support and ARIA attributes?
 - Are there color-only indicators without alternative visual cues?
 
 **i18n** *(only if the project has an i18n system)*
-- Are there new hardcoded user-facing strings that should use translation keys?
+- Are there hardcoded user-facing strings that should use translation keys?
 
 **Reuse opportunities**
-- Are there new functions, utilities, or patterns that duplicate things already in the codebase?
-- Could any of the new code be consolidated with existing code to reduce duplication?
+- Are there functions, utilities, or patterns that duplicate things already in the codebase?
+- Could any code be consolidated with existing code to reduce duplication?
 
 ## Step 9: Generate three documents
 
@@ -537,10 +550,15 @@ For EACH tech debt item identified in Step 8, compare against the existing backl
 - In the Context section, add: "Previously addressed in [[<old-ID>]], but has regressed."
 - Track this as a "new item" for the release summary
 
+**If a matching item exists and is Open but is no longer present in the latest code:**
+- The issue has been resolved — update the existing item's status to `Done`
+- Set `resolved: YYYY-MM-DD` in the detail file frontmatter
+- Track this as a "resolved item" for the release summary
+
 **If no matching item exists:**
 - Create a new detail file in `<basedir>/tech-debt/` with the next available ID
 - Add a new row to `<basedir>/tech-debt.md`
-- Set source to `release/<old-branch>→<new-branch> (YYYY-MM-DD)`
+- Set source to `release/<new-branch> (YYYY-MM-DD)`
 - Track this as a "new item" for the release summary
 
 **Matching criteria** (check in order):
@@ -578,11 +596,14 @@ tags:
 # Technical Debt Summary: <new-branch>
 
 **Generated:** YYYY-MM-DD HH:MM
+**Latest Release:** <new-branch>
+**Analyzed Against:** Full codebase at <new-branch>
 
 ## Overview
 
-<2-3 sentence summary: How much new technical debt was introduced in this release?
-Is the overall trajectory improving or declining? How does the backlog look?>
+<2-3 sentence summary of the tech debt picture as it stands in the latest release.
+What is the overall health of the codebase? Are there systemic patterns? How does
+the backlog look compared to the previous release?>
 
 ## New Items Added to Backlog
 
@@ -593,10 +614,17 @@ Is the overall trajectory improving or declining? How does the backlog look?>
 
 ## Updated Existing Items
 
-<List any existing backlog items that were updated with new occurrences from this
-release. If none, omit this section.>
+<List any existing backlog items that were updated with new occurrences or details.
+If none, omit this section.>
 
 - [[0005]] — Added new occurrence in `src/components/Dashboard.svelte`
+
+## Resolved Items
+
+<List any previously Open backlog items that are no longer present in the latest
+code and were marked Done. If none, omit this section.>
+
+- [[0003]] — No longer present in codebase at <new-branch>
 
 ## Patterns & Trends
 
