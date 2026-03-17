@@ -20,14 +20,19 @@ ENGINEERING RELEASE NOTES (1.2 – 1.3)
 
 ## Component Versions
 
-<!-- Populated from version.json at project root -->
+<!-- Populated from version.json at project root. Keys are converted to display
+     names, versions assembled from major.minor.patch[.revision] fields. -->
 
 | Component | Version |
 |-----------|---------|
-| Dashboard Service | 1.3.0 |
-| Map Engine | 2.1.0 |
-| Notification Service | 1.1.0 |
-| API Gateway | 3.0.2 |
+| Manager | 5.2.3 |
+| TrueView | 4.6.1 |
+| SkyDome | 5.2.3 |
+| Ground Control | 8.1.2 |
+| DroneHunter | 8.1.3 |
+| Arducopter | 4.4.4.6 |
+| Target Assignment | 1.0.0 |
+| EULA | 9.15.22 |
 
 The main goal of this release is dashboard filtering, map rendering performance, and notification latency improvements.
 

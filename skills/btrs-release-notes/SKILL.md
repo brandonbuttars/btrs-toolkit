@@ -63,9 +63,28 @@ Word document generation.
 test -f version.json && cat version.json || echo "VERSION_JSON_NOT_FOUND"
 ```
 
-- If `version.json` exists: parse the JSON object. Each key is a component name,
-  each value is a version string. Store this data for use in Step 9 (Document 2)
-  and Step 10 (Word generation).
+The file uses nested objects with `major`, `minor`, `patch`, and optional `revision`
+fields per component:
+
+```json
+{
+  "manager": { "major": 5, "minor": 2, "patch": 3 },
+  "arducopter": { "major": 4, "minor": 4, "patch": 4, "revision": 6 },
+  "targetassignment": { "major": 1, "minor": 0, "patch": 0 }
+}
+```
+
+**Parsing rules:**
+- Construct the version string as `major.minor.patch`. If `revision` is present,
+  append it: `major.minor.patch.revision` (e.g., `4.4.4.6`).
+- Convert component keys to human-readable display names using Title Case with
+  word separation (e.g., `groundcontrol` → `Ground Control`, `dronehunter` →
+  `DroneHunter`, `targetassignment` → `Target Assignment`). Use your best
+  judgment for casing — proper nouns and brand names should keep their expected
+  capitalization. When unsure, use simple Title Case with spaces at likely word
+  boundaries.
+- If `version.json` exists: store the parsed component/version data for use in
+  Step 9 (Document 2) and Step 10 (Word generation).
 - If `version.json` does not exist: the Component Versions section will be omitted
   from the engineering notes, and Word document generation will be skipped in Step 10.
 
